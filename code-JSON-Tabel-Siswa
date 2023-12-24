@@ -1,0 +1,51 @@
+const wbook = SpreadsheetApp.getActive()
+const sheet = wbook.getSheetByName("Sheet1")
+const url = 'https://script.google.com/macros/s/AKfycbzT9NDq46QgU6XJregud-N9zEGuaO0e4a_K22OxGI83xrMzV5tMHphsflzOrjzMIFDX/exec'
+var response = UrlFetchApp.fetch(url)
+var jsonText = response.getContentText()
+var data = JSON.parse(jsonText)
+
+// SEND DATA TO CLIENT
+function doGet() {
+  let data = []
+  const rlen = sheet.getLastRow()
+  const clen = sheet.getLastColumn()
+  const rows = sheet.getRange(1,1,rlen,clen).getValues()
+
+  for (let i=0; i<rows.length; i++) {
+    const dataRow = rows[i]
+    let record = {}
+    for (let j=0; j<clen; j++) {
+      record[rows[0][j]] = dataRow[j];
+    }  
+
+    if (i>0) {
+      data.push(record)
+    }
+  }
+
+  const response = {
+    "data" : data
+  }
+  
+  console.log(response.data[1].nama)
+  // Logger.log(response.data.find(x => x.nama === 'Raqi').kelas)  
+  return ContentService.createTextOutput(JSON.stringify(response.data)).setMimeType(ContentService.MimeType.JSON);
+  // Logger.log(ContentService.createTextOutput(JSON.stringify(response)).setMimeType(ContentService.MimeType.JSON))
+  // Logger.log(rows)
+}
+
+// POST DATA FROM CLIENT
+function doPost(e) {
+  let data = e.parameter;
+  SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Sheet1').appendRow([data.nama, data.kelas]);
+  return ContentService.createTextOutput("Post Complete");
+}
+
+function includeExternalFile(filename) {
+  return HtmlService.createHtmlOutputFromFile(filename).getContent();
+}
+
+function includeExternalFile(filename) {
+  return HtmlService.createHtmlOutputFromFile(filename).getContent();
+}

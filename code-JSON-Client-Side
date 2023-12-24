@@ -1,0 +1,49 @@
+  var url = 'https://script.google.com/macros/s/AKfycbwyCwbr4x2R4KM3q78TvS1Drq1wY-kOcyuPXn3PBo_H5YYSVfFvOYf5N1ilWfPjOIVF/exec'
+
+function getUsers() {
+  // from file JSON Tabel Siswa Test
+  var response = UrlFetchApp.fetch(url)
+  var jsonText = response.getContentText()
+  var data = JSON.parse(jsonText)
+  let users = data.map(user => [user.nama, user.kelas])
+  return [['Name', 'Class'], ...users]
+}
+
+function getAnyUser() {
+  const studentName = 'Kaila'
+  var response = UrlFetchApp.fetch(url)
+  var jsonText = response.getContentText()
+  var data = JSON.parse(jsonText)
+  // let users = data.map(user => [user.nama, user.kelas])
+  // return [['Name', 'Class'], ...users]
+
+  /* Find object by name in an array of JavaScript objects */
+  var kelas = data.find(x => x.nama === studentName).kelas
+  Logger.log(kelas)
+}
+
+function post () {
+var formData = {
+  'nama': 'GantaLast3',
+  'kelas': 'bob@example.com34'
+};
+var options = {
+  'method' : 'POST',
+  'payload' : formData,
+};
+const res =  UrlFetchApp.fetch(url, options);
+Logger.log(res.getContentText())
+}
+
+function update () {
+var formData = {
+  'nama': 'GantaLast2',
+  'kelas': 'bob@example.com3'
+};
+var options = {
+  'method' : 'UPDATE',
+  'payload' : formData,
+};
+const res =  UrlFetchApp.fetch(url, options);
+Logger.log(res.getContentText())
+}
